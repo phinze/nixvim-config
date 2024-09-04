@@ -16,6 +16,12 @@
     scrolloff = 5;
   };
 
+  clipboard = {
+    # Always yank to system clipboard
+    # This should pass through tmux + OSC52 when SSHed into dev machine
+    register = "unnamedplus";
+  };
+
   colorschemes.catppuccin.enable = true;
   plugins.cmp = {
     enable = true;
@@ -167,9 +173,6 @@
     };
   };
   plugins.none-ls.enable = true;
-  plugins.nvim-osc52 = {
-    enable = true;
-  };
   plugins.oil = {
     enable = true;
   };
