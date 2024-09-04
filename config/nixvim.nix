@@ -58,7 +58,11 @@
         "_" = ["trim_whitespace"];
         "*" = ["codespell"];
         go = ["goimports" "golines" "gofmt" "gofumpt"];
-        javascript = [["prettierd" "prettier"]];
+        javascript = {
+          __unkeyed-1 = "prettierd";
+          __unkeyed-2 = "prettier";
+          stop_after_first = true;
+        };
         json = ["jq"];
         lua = ["stylua"];
         nix = ["alejandra"];
