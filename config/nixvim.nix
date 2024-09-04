@@ -6,13 +6,22 @@
   # Space as leader
   globals.mapleader = " ";
 
-  globalOpts = {
+  opts = {
+    # show line numbers
     number = true;
-    ts = 2;
+
+    # default tabs to 2 spaces
+    tabstop = 2;
     shiftwidth = 2;
+
+    # case insensitive search unless i use a capital letter
     ignorecase = true;
     smartcase = true;
+
+    # start searching while i type
     incsearch = true;
+
+    # begin scrolling before cursor hits the very bottom of the buffer
     scrolloff = 5;
   };
 
