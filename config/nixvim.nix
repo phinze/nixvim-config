@@ -72,6 +72,9 @@
         terraform = ["terraform_fmt"];
       };
       formatters = {
+        codespell = {
+          command = "${lib.getExe pkgs.codespell}";
+        };
         black = {
           command = "${lib.getExe pkgs.black}";
         };
