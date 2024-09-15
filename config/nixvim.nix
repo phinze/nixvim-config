@@ -137,6 +137,7 @@
     enable = true;
     servers = {
       nixd.enable = true;
+      ruby-lsp.enable = true;
     };
     keymaps = {
       extra = [
@@ -185,6 +186,31 @@
           action = "hover";
           desc = "LSP hover";
         };
+      };
+    };
+  };
+  plugins.neotest = {
+    enable = true;
+
+    adapters.go.enable = true;
+    adapters.minitest.enable = true;
+    adapters.rspec.enable = true;
+    adapters.rust.enable = true;
+
+    settings = {
+      status = {
+        virtual_text = true;
+      };
+      output = {
+        open_on_run = true;
+      };
+      quickfix = {
+        enabled = true;
+        open = ''
+          function()
+            require("trouble").open({mode = "quickfix", focus = false})
+          end
+        '';
       };
     };
   };
@@ -263,10 +289,16 @@
   extraPlugins = [
     pkgs.vimPlugins.vimux
     pkgs.vimPlugins.guess-indent-nvim
+    pkgs.vimPlugins.vim-test
   ];
 
   extraConfigLua = ''
     require("guess-indent").setup({})
+  '';
+
+  extraConfigVim = ''
+    " use vimux in vim-test
+    let test#strategy = "vimux"
   '';
 
   keymaps = [
@@ -313,6 +345,88 @@
       key = "<leader>F";
       action = "<cmd>lua require(\"conform\").format({ bufnr = args.buf, async = true })<CR>";
       options.desc = "Format buffer";
+    }
+
+    # neotest
+    {
+      key = "<leader>t";
+      action = "";
+      options.desc = "+test";
+    }
+    {
+      key = "<leader>tt";
+      action.__raw = ''
+        function() require("neotest").run.run(vim.fn.expand("%")) end
+      '';
+      options.desc = "Run File";
+    }
+    {
+      key = "<leader>tT";
+      action.__raw = ''
+        function() require("neotest").run.run(vim.uv.cwd()) end
+      '';
+      options.desc = "Run All Test Files";
+    }
+    {
+      key = "<leader>tr";
+      action.__raw = ''
+        function() require("neotest").run.run() end
+      '';
+      options.desc = "Run Nearest";
+    }
+    {
+      key = "<leader>tl";
+      action.__raw = ''
+        function() require("neotest").run.run_last() end
+      '';
+      options.desc = "Run Last";
+    }
+    {
+      key = "<leader>ts";
+      action.__raw = ''
+        function() require("neotest").summary.toggle() end
+      '';
+      options.desc = "Toggle Summary";
+    }
+    {
+      key = "<leader>to";
+      action.__raw = ''
+        function() require("neotest").output.open({ enter = true; auto_close = true;}) end
+      '';
+      options.desc = "Show Output";
+    }
+    {
+      key = "<leader>tO";
+      action.__raw = ''
+        function() require("neotest").output_panel.toggle() end
+      '';
+      options.desc = "Toggle Output Panel";
+    }
+    {
+      key = "<leader>tS";
+      action.__raw = ''
+        function() require("neotest").run.stop() end
+      '';
+      options.desc = "Stop";
+    }
+    {
+      key = "<leader>tw";
+      action.__raw = ''
+        function() require("neotest").watch.toggle(vim.fn.expand("%")) end
+      '';
+      options.desc = "Toggle Watch";
+    }
+
+    # vim-test
+    {
+      key = "<leader>n";
+      action = "<cmd>TestNearest<CR>";
+      options.desc = "Run nearest test in vim-test";
+    }
+    {
+      key = "<leader>f";
+      action = "<cmd>TestFile<CR>";
+      options.desc = "Run file tests in vim-test";
     }
   ];
 }
