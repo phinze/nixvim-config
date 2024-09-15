@@ -138,9 +138,15 @@
     servers = {
       nixd.enable = true;
       ruby-lsp.enable = true;
+      gopls.enable = true;
     };
     keymaps = {
       extra = [
+        {
+          key = "<leader>l";
+          action = "";
+          options.desc = "+lsp";
+        }
         {
           mode = "n";
           key = "<leader>li";
