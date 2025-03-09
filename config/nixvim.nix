@@ -137,7 +137,7 @@
     enable = true;
     servers = {
       nixd.enable = true;
-      ruby-lsp.enable = true;
+      ruby_lsp.enable = true;
       gopls.enable = true;
     };
     keymaps = {
@@ -300,6 +300,7 @@
   };
   plugins.trouble.enable = true;
   plugins.tmux-navigator.enable = true;
+  plugins.web-devicons.enable = true;
   plugins.which-key.enable = true;
 
   extraPlugins = [
