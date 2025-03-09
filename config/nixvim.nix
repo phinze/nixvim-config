@@ -188,6 +188,16 @@
           desc = "Go to type definition";
         };
 
+        grr = {
+          action = "references";
+          desc = "Go to references";
+        };
+
+        grn = {
+          action = "rename";
+          desc = "Rename symbol";
+        };
+
         K = {
           action = "hover";
           desc = "LSP hover";
@@ -433,6 +443,14 @@
       key = "<leader>f";
       action = "<cmd>TestFile<CR>";
       options.desc = "Run file tests in vim-test";
+    }
+  ];
+
+  autoCmd = [
+    {
+      event = ["BufReadPost"];
+      pattern = "quickfix";
+      command = "nnoremap <buffer> <CR> <CR>";
     }
   ];
 }
