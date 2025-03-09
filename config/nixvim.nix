@@ -233,6 +233,11 @@
       };
     };
   };
+  plugins.neo-tree = {
+    enable = true;
+    filesystem.followCurrentFile.enabled = true;
+    filesystem.useLibuvFileWatcher = true;
+  };
   plugins.none-ls.enable = true;
   plugins.oil = {
     enable = true;
@@ -434,14 +439,21 @@
       options.desc = "Toggle Watch";
     }
 
+    # neo-tree
+    {
+      key = "<leader>nt";
+      action = "<cmd>Neotree toggle<CR>";
+      options.desc = "Toggle neo-tree";
+    }
+
     # vim-test
     {
-      key = "<leader>n";
+      key = "<leader>tn";
       action = "<cmd>TestNearest<CR>";
       options.desc = "Run nearest test in vim-test";
     }
     {
-      key = "<leader>f";
+      key = "<leader>tf";
       action = "<cmd>TestFile<CR>";
       options.desc = "Run file tests in vim-test";
     }
