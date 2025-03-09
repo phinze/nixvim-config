@@ -50,6 +50,9 @@
       "<C-CR>" = "cmp.mapping.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = true })";
     };
   };
+  plugins.aerial = {
+    enable = true;
+  };
   plugins.conform-nvim = {
     enable = true;
 
@@ -284,15 +287,6 @@
         "[]" = "@class.outer";
       };
     };
-    swap = {
-      enable = true;
-      swapNext = {
-        "<leader>a" = "@parameters.inner";
-      };
-      swapPrevious = {
-        "<leader>A" = "@parameter.outer";
-      };
-    };
   };
   plugins.treesitter-refactor = {
     enable = true;
@@ -319,6 +313,12 @@
   '';
 
   keymaps = [
+    # Aerial
+    {
+      key = "<leader>a";
+      action = "<cmd>AerialToggle<CR>";
+      options.desc = "Toggle aerial symbols outline";
+    }
     # Telescope
     {
       key = "<leader>o";
