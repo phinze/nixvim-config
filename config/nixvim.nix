@@ -52,6 +52,8 @@
   };
   plugins.aerial = {
     enable = true;
+    # make symbols outline per-window, not per-buffer
+    settings.attach_mode = "global";
   };
   plugins.conform-nvim = {
     enable = true;
