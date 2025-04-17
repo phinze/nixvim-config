@@ -321,6 +321,7 @@
   extraConfigVim = ''
     " use vimux in vim-test
     let test#strategy = "vimux"
+    let test#preserve_screen = 1
   '';
 
   keymaps = [
