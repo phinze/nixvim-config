@@ -6,6 +6,8 @@
   # Space as leader
   globals.mapleader = " ";
 
+  vimAlias = true;
+
   opts = {
     # show line numbers
     number = true;
