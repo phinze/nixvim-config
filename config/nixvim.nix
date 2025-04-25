@@ -150,6 +150,8 @@
         cmd = ["bundle" "exec" "ruby-lsp"];
       };
       gopls.enable = true;
+      terraformls.enable = true;
+      ansiblels.enable = true;
     };
     keymaps = {
       extra = [
