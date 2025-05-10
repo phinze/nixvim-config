@@ -79,17 +79,20 @@
         terraform = ["terraform_fmt"];
       };
       formatters = {
-        codespell = {
-          command = "${lib.getExe pkgs.codespell}";
+        alejandra = {
+          command = "${lib.getExe pkgs.alejandra}";
         };
         black = {
           command = "${lib.getExe pkgs.black}";
         };
+        codespell = {
+          command = "${lib.getExe pkgs.codespell}";
+        };
+        goimports = {
+          command = "${lib.getExe' pkgs.gotools "goimports"}";
+        };
         isort = {
           command = "${lib.getExe pkgs.isort}";
-        };
-        alejandra = {
-          command = "${lib.getExe pkgs.alejandra}";
         };
         jq = {
           command = "${lib.getExe pkgs.jq}";
