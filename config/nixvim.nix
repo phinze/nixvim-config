@@ -153,6 +153,10 @@
   plugins.gitsigns = {
     enable = true;
   };
+  plugins.gitlinker = {
+    enable = true;
+    actionCallback = "open_in_browser";
+  };
   plugins.indent-blankline = {
     enable = true;
     settings.scope.enabled = true;
