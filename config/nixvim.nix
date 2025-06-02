@@ -37,19 +37,23 @@
   plugins.cmp = {
     enable = true;
     settings.sources = [
+      {name = "copilot";}
       {name = "nvim_lsp";}
       {name = "path";}
       {name = "buffer";}
     ];
     settings.mapping = {
-      "<C-Tab>" = "cmp.mapping(cmp.mapping.select_next_item(), {'i', 's'})";
-      "<C-n>" = "cmp.mapping.select_next_item()";
-      "<C-p>" = "cmp.mapping.select_prev_item()";
-      "<C-e>" = "cmp.mapping.abort()";
-      "<C-b>" = "cmp.mapping.scroll_docs(-4)";
-      "<C-f>" = "cmp.mapping.scroll_docs(4)";
-      "<CR>" = "cmp.mapping.confirm({ select = true })";
-      "<C-CR>" = "cmp.mapping.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = true })";
+      __raw = ''
+        cmp.mapping.preset.insert({
+          ['<C-b>'] = cmp.mapping.scroll_docs(-4),
+          ['<C-f>'] = cmp.mapping.scroll_docs(4),
+          ['<C-n>'] = cmp.mapping.select_next_item(),
+          ['<C-p>'] = cmp.mapping.select_prev_item(),
+          ['<C-Space>'] = cmp.mapping.complete(),
+          ['<C-e>'] = cmp.mapping.abort(),
+          ['<CR>'] = cmp.mapping.confirm({ select = true }),
+        })
+      '';
     };
   };
   plugins.aerial = {
@@ -134,6 +138,17 @@
         end
       '';
     };
+  };
+  plugins.copilot-lua = {
+    enable = true;
+    settings = {
+      # Disable in favor of copilot-cmp
+      suggestion.enabled = false;
+      panel.enabled = false;
+    };
+  };
+  plugins.copilot-cmp = {
+    enable = true;
   };
   plugins.gitsigns = {
     enable = true;
