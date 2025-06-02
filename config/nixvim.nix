@@ -221,6 +221,9 @@
       };
     };
   };
+  plugins.neogit = {
+    enable = true;
+  };
   plugins.neotest = {
     enable = true;
 
