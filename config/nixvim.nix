@@ -237,6 +237,11 @@
           action = "hover";
           desc = "LSP hover";
         };
+
+        "<leader>i" = {
+          action = "hover";
+          desc = "LSP hover";
+        };
       };
     };
   };
