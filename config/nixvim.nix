@@ -25,6 +25,9 @@
 
     # begin scrolling before cursor hits the very bottom of the buffer
     scrolloff = 5;
+
+    # reduce time before hover diagnostics appear
+    updatetime = 300;
   };
 
   clipboard = {
@@ -200,6 +203,12 @@
           action.__raw = "function() vim.lsp.codelens.run() end";
           options.desc = "LSP CodeLens run";
         }
+        {
+          mode = "n";
+          key = "<leader>ld";
+          action.__raw = "function() vim.diagnostic.open_float() end";
+          options.desc = "Show diagnostics in floating window";
+        }
       ];
 
       lspBuf = {
@@ -350,6 +359,39 @@
 
   extraConfigLua = ''
     require("guess-indent").setup({})
+
+    -- Configure diagnostics
+    vim.diagnostic.config({
+      virtual_text = true,
+      signs = true,
+      underline = true,
+      update_in_insert = false,
+      severity_sort = true,
+      float = {
+        focusable = false,
+        style = "minimal",
+        border = "rounded",
+        source = "always",
+        header = "",
+        prefix = "",
+      },
+    })
+
+    -- Show diagnostics in a floating window on hover
+    vim.api.nvim_create_autocmd("CursorHold", {
+      pattern = "*",
+      callback = function()
+        local opts = {
+          focusable = false,
+          close_events = { "BufLeave", "CursorMoved", "InsertEnter", "FocusLost" },
+          border = 'rounded',
+          source = 'always',
+          prefix = ' ',
+          scope = 'cursor',
+        }
+        vim.diagnostic.open_float(nil, opts)
+      end,
+    })
   '';
 
   extraConfigVim = ''
