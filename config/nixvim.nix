@@ -177,6 +177,11 @@
       gopls.enable = true;
       terraformls.enable = true;
       ansiblels.enable = true;
+      rust_analyzer = {
+        enable = true;
+        installCargo = true;
+        installRustc = true;
+      };
     };
     keymaps = {
       extra = [
