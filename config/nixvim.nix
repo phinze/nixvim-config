@@ -171,8 +171,6 @@
       nixd.enable = true;
       ruby_lsp = {
         enable = true;
-        package = null;
-        cmd = ["bundle" "exec" "ruby-lsp"];
       };
       gopls.enable = true;
       terraformls.enable = true;
