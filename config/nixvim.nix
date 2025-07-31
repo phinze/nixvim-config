@@ -70,7 +70,6 @@
     settings = {
       formatters_by_ft = {
         "_" = ["trim_whitespace"];
-        "*" = ["codespell"];
         go = ["goimports" "golines" "gofmt" "gofumpt"];
         javascript = {
           __unkeyed-1 = "prettierd";
@@ -91,9 +90,6 @@
         };
         black = {
           command = "${lib.getExe pkgs.black}";
-        };
-        codespell = {
-          command = "${lib.getExe pkgs.codespell}";
         };
         goimports = {
           command = "${lib.getExe' pkgs.gotools "goimports"}";
@@ -290,7 +286,10 @@
     filesystem.followCurrentFile.enabled = true;
     filesystem.useLibuvFileWatcher = true;
   };
-  plugins.none-ls.enable = true;
+  plugins.none-ls = {
+    enable = true;
+    sources.diagnostics.codespell.enable = true;
+  };
   plugins.oil = {
     enable = true;
   };
