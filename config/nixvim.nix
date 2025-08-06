@@ -256,31 +256,6 @@
   plugins.neogit = {
     enable = true;
   };
-  plugins.neotest = {
-    enable = true;
-
-    adapters.go.enable = true;
-    adapters.minitest.enable = true;
-    adapters.rspec.enable = true;
-    adapters.rust.enable = true;
-
-    settings = {
-      status = {
-        virtual_text = true;
-      };
-      output = {
-        open_on_run = true;
-      };
-      quickfix = {
-        enabled = true;
-        open = ''
-          function()
-            require("trouble").open({mode = "quickfix", focus = false})
-          end
-        '';
-      };
-    };
-  };
   plugins.neo-tree = {
     enable = true;
     filesystem.followCurrentFile.enabled = true;
