@@ -76,6 +76,21 @@
           __unkeyed-2 = "prettier";
           stop_after_first = true;
         };
+        typescript = {
+          __unkeyed-1 = "prettierd";
+          __unkeyed-2 = "prettier";
+          stop_after_first = true;
+        };
+        typescriptreact = {
+          __unkeyed-1 = "prettierd";
+          __unkeyed-2 = "prettier";
+          stop_after_first = true;
+        };
+        javascriptreact = {
+          __unkeyed-1 = "prettierd";
+          __unkeyed-2 = "prettier";
+          stop_after_first = true;
+        };
         json = ["jq"];
         lua = ["stylua"];
         nix = ["alejandra"];
@@ -176,6 +191,7 @@
         installCargo = true;
         installRustc = true;
       };
+      ts_ls.enable = true;
     };
     keymaps = {
       extra = [
