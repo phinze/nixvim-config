@@ -133,7 +133,7 @@
       };
       format_on_save = ''
         function(bufnr)
-          local ignore_filetypes = { }
+          local ignore_filetypes = { "sh", "bash", "zsh" }
           if vim.tbl_contains(ignore_filetypes, vim.bo[bufnr].filetype) then
             return
           end
@@ -192,6 +192,14 @@
         installRustc = true;
       };
       ts_ls.enable = true;
+      bashls = {
+        enable = true;
+        # Only use for diagnostics, not formatting
+        onAttach.function = ''
+          client.server_capabilities.documentFormattingProvider = false
+          client.server_capabilities.documentRangeFormattingProvider = false
+        '';
+      };
     };
     keymaps = {
       extra = [
