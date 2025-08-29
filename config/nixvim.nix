@@ -292,6 +292,9 @@
   plugins.oil = {
     enable = true;
   };
+  plugins.precognition = {
+    enable = true;
+  };
   plugins.rainbow-delimiters.enable = true;
   plugins.telescope = {
     enable = true;
