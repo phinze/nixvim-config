@@ -355,6 +355,10 @@
   plugins.web-devicons.enable = true;
   plugins.which-key.enable = true;
 
+  extraPackages = with pkgs; [
+    tmux
+  ];
+
   extraPlugins = [
     pkgs.vimPlugins.vimux
     pkgs.vimPlugins.guess-indent-nvim
