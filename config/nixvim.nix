@@ -294,6 +294,9 @@
   };
   plugins.precognition = {
     enable = true;
+    settings = {
+      startVisible = false;
+    };
   };
   plugins.rainbow-delimiters.enable = true;
   plugins.telescope = {
@@ -459,6 +462,13 @@
       key = "<leader>F";
       action = "<cmd>lua require(\"conform\").format({ bufnr = args.buf, async = true })<CR>";
       options.desc = "Format buffer";
+    }
+
+    # precognition
+    {
+      key = "<leader>P";
+      action = "<cmd>lua require('precognition').peek()<CR>";
+      options.desc = "Peek precognition hints";
     }
 
     # neotest
