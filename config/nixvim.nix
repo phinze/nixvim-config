@@ -133,8 +133,17 @@
       };
       format_on_save = ''
         function(bufnr)
-          local ignore_filetypes = { "sh", "bash", "zsh" }
-          if vim.tbl_contains(ignore_filetypes, vim.bo[bufnr].filetype) then
+          -- Only allow auto-format for languages with standard formatters
+          local allowed_filetypes = {
+            "go",        -- gofmt is the standard
+            "rust",      -- rustfmt is the standard
+            "nix",       -- alejandra/nixfmt are standard
+            "terraform", -- terraform fmt is the standard
+            "python",    -- black/isort are widely accepted standards
+            "lua",       -- stylua is widely accepted for neovim configs
+          }
+
+          if not vim.tbl_contains(allowed_filetypes, vim.bo[bufnr].filetype) then
             return
           end
 
