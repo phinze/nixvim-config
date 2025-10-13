@@ -356,9 +356,9 @@
     };
   };
   plugins.rainbow-delimiters.enable = true;
-  plugins.telescope = {
+  plugins.snacks = {
     enable = true;
-    extensions.fzf-native.enable = true;
+    settings.picker.enable = true;
   };
   plugins.treesitter = {
     enable = true;
@@ -476,16 +476,74 @@
       action = "<cmd>AerialToggle<CR>";
       options.desc = "Toggle aerial symbols outline";
     }
-    # Telescope
+
+    # Old telescope keybindings - temporary reminders
     {
       key = "<leader>o";
-      action = "<cmd>Telescope find_files<CR>";
-      options.desc = "Find files";
+      action.__raw = ''
+        function()
+          Snacks.notify.warn("Use <leader>ff (respecting gitignore) or <leader>fF (all files)", { title = "Keybinding Changed" })
+        end
+      '';
+      options.desc = "Old keybinding - use <leader>ff or <leader>fF";
     }
     {
       key = "<leader>g";
-      action = "<cmd>Telescope live_grep<CR>";
-      options.desc = "Find files";
+      action.__raw = ''
+        function()
+          Snacks.notify.warn("Use <leader>fg for live grep", { title = "Keybinding Changed" })
+        end
+      '';
+      options.desc = "Old keybinding - use <leader>fg";
+    }
+
+    # Snacks picker
+    {
+      key = "<leader>f";
+      action = "";
+      options.desc = "+find";
+    }
+    {
+      key = "<leader>ff";
+      action.__raw = ''
+        function() Snacks.picker.files() end
+      '';
+      options.desc = "Find files (respecting gitignore)";
+    }
+    {
+      key = "<leader>fF";
+      action.__raw = ''
+        function() Snacks.picker.files({ hidden = true, ignored = true }) end
+      '';
+      options.desc = "Find all files (including gitignored)";
+    }
+    {
+      key = "<leader>fg";
+      action.__raw = ''
+        function() Snacks.picker.grep() end
+      '';
+      options.desc = "Find words (live grep)";
+    }
+    {
+      key = "<leader>fb";
+      action.__raw = ''
+        function() Snacks.picker.buffers() end
+      '';
+      options.desc = "Find buffers";
+    }
+    {
+      key = "<leader>fo";
+      action.__raw = ''
+        function() Snacks.picker.recent() end
+      '';
+      options.desc = "Find recent files";
+    }
+    {
+      key = "<leader>f<CR>";
+      action.__raw = ''
+        function() Snacks.picker.resume() end
+      '';
+      options.desc = "Resume last search";
     }
 
     # Vimux
