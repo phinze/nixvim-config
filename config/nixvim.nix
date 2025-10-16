@@ -477,24 +477,20 @@
       options.desc = "Toggle aerial symbols outline";
     }
 
-    # Old telescope keybindings - temporary reminders
+    # Old telescope keybindings (still work)
     {
       key = "<leader>o";
       action.__raw = ''
-        function()
-          Snacks.notify.warn("Use <leader>ff (respecting gitignore) or <leader>fF (all files)", { title = "Keybinding Changed" })
-        end
+        function() Snacks.picker.files() end
       '';
-      options.desc = "Old keybinding - use <leader>ff or <leader>fF";
+      options.desc = "Find files (alias for <leader>ff)";
     }
     {
       key = "<leader>g";
       action.__raw = ''
-        function()
-          Snacks.notify.warn("Use <leader>fg for live grep", { title = "Keybinding Changed" })
-        end
+        function() Snacks.picker.grep() end
       '';
-      options.desc = "Old keybinding - use <leader>fg";
+      options.desc = "Live grep (alias for <leader>fg)";
     }
 
     # Snacks picker
