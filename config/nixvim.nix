@@ -226,7 +226,7 @@
   };
   plugins.gitlinker = {
     enable = true;
-    actionCallback = "open_in_browser";
+    settings.opts.action_callback.__raw = "require('gitlinker.actions').open_in_browser";
   };
   plugins.indent-blankline = {
     enable = true;
@@ -338,8 +338,8 @@
   };
   plugins.neo-tree = {
     enable = true;
-    filesystem.followCurrentFile.enabled = true;
-    filesystem.useLibuvFileWatcher = true;
+    settings.filesystem.follow_current_file.enabled = true;
+    settings.filesystem.use_libuv_file_watcher = true;
   };
   plugins.none-ls = {
     enable = true;
@@ -407,7 +407,7 @@
   };
   plugins.treesitter-refactor = {
     enable = true;
-    highlightDefinitions.enable = true;
+    settings.highlight_definitions.enable = true;
   };
   plugins.trouble.enable = true;
   plugins.tmux-navigator.enable = true;
