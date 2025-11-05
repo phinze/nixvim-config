@@ -28,6 +28,10 @@
 
     # reduce time before hover diagnostics appear
     updatetime = 300;
+
+    # automatically read files when changed outside of neovim
+    # useful when Claude Code modifies files in a separate tmux pane
+    autoread = true;
   };
 
   clipboard = {
@@ -689,6 +693,35 @@
       event = ["BufReadPost"];
       pattern = "quickfix";
       command = "nnoremap <buffer> <CR> <CR>";
+    }
+
+    # Automatic file reloading when files change outside of neovim
+    # This is useful when Claude Code modifies files in a separate tmux pane
+    # NOTE: For tmux users, add `set -g focus-events on` to ~/.tmux.conf
+    {
+      event = ["FocusGained" "BufEnter" "CursorHold" "CursorHoldI"];
+      pattern = "*";
+      callback.__raw = ''
+        function()
+          -- Only check for changes if not in command-line mode
+          if vim.fn.mode() ~= 'c' and vim.fn.getcmdwintype() == "" then
+            vim.cmd('checktime')
+          end
+        end
+      '';
+    }
+
+    # Show a warning when a file is reloaded
+    {
+      event = ["FileChangedShellPost"];
+      pattern = "*";
+      callback.__raw = ''
+        function()
+          vim.api.nvim_echo({
+            {"File changed on disk. Buffer reloaded.", "WarningMsg"}
+          }, false, {})
+        end
+      '';
     }
   ];
 }
