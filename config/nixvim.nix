@@ -97,15 +97,15 @@
         };
         json = ["jq"];
         lua = ["stylua"];
-        nix = ["alejandra"];
+        nix = ["nixfmt"];
         python = ["isort" "black"];
         rust = ["rustfmt"];
         sh = ["shellcheck" "shellharden" "shfmt"];
         terraform = ["terraform_fmt"];
       };
       formatters = {
-        alejandra = {
-          command = "${lib.getExe pkgs.alejandra}";
+        nixfmt = {
+          command = "${lib.getExe pkgs.nixfmt-rfc-style}";
         };
         black = {
           command = "${lib.getExe pkgs.black}";
