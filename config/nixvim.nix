@@ -228,9 +228,13 @@
       '';
     };
   };
-  plugins.gitlinker = {
+  plugins.gitportal = {
     enable = true;
-    settings.opts.action_callback.__raw = "require('gitlinker.actions').open_in_browser";
+    settings = {
+      always_include_current_line = true;
+      always_use_commit_hash_in_url = true;
+      default_remote = "origin";
+    };
   };
   plugins.indent-blankline = {
     enable = true;
@@ -292,6 +296,12 @@
           action.__raw = "function() vim.diagnostic.open_float() end";
           options.desc = "Show diagnostics in floating window";
         }
+        {
+          mode = "n";
+          key = "<leader>ls";
+          action.__raw = "function() Snacks.picker.lsp_symbols({ tree = true }) end";
+          options.desc = "LSP symbols tree";
+        }
       ];
 
       lspBuf = {
@@ -342,8 +352,13 @@
   };
   plugins.neo-tree = {
     enable = true;
-    settings.filesystem.follow_current_file.enabled = true;
-    settings.filesystem.use_libuv_file_watcher = true;
+    settings = {
+      filesystem = {
+        follow_current_file.enabled = true;
+        use_libuv_file_watcher = true;
+      };
+      log_level = "error";
+    };
   };
   plugins.none-ls = {
     enable = true;
@@ -372,40 +387,42 @@
   };
   plugins.treesitter-textobjects = {
     enable = true;
-    select = {
-      enable = true;
-      lookahead = true;
-      keymaps = {
-        "aa" = "@parameter.outer";
-        "ia" = "@parameter.inner";
-        "af" = "@function.outer";
-        "if" = "@function.inner";
-        "ac" = "@class.outer";
-        "ic" = "@class.inner";
-        "ii" = "@conditional.inner";
-        "ai" = "@conditional.outer";
-        "il" = "@loop.inner";
-        "al" = "@loop.outer";
-        "at" = "@comment.outer";
+    settings = {
+      select = {
+        enable = true;
+        lookahead = true;
+        keymaps = {
+          aa = "@parameter.outer";
+          ia = "@parameter.inner";
+          af = "@function.outer";
+          "if" = "@function.inner";
+          ac = "@class.outer";
+          ic = "@class.inner";
+          ii = "@conditional.inner";
+          ai = "@conditional.outer";
+          il = "@loop.inner";
+          al = "@loop.outer";
+          at = "@comment.outer";
+        };
       };
-    };
-    move = {
-      enable = true;
-      gotoNextStart = {
-        "]m" = "@function.outer";
-        "]]" = "@class.outer";
-      };
-      gotoNextEnd = {
-        "]M" = "@function.outer";
-        "][" = "@class.outer";
-      };
-      gotoPreviousStart = {
-        "[m" = "@function.outer";
-        "[[" = "@class.outer";
-      };
-      gotoPreviousEnd = {
-        "[M" = "@function.outer";
-        "[]" = "@class.outer";
+      move = {
+        enable = true;
+        goto_next_start = {
+          "]m" = "@function.outer";
+          "]]" = "@class.outer";
+        };
+        goto_next_end = {
+          "]M" = "@function.outer";
+          "][" = "@class.outer";
+        };
+        goto_previous_start = {
+          "[m" = "@function.outer";
+          "[[" = "@class.outer";
+        };
+        goto_previous_end = {
+          "[M" = "@function.outer";
+          "[]" = "@class.outer";
+        };
       };
     };
   };
@@ -488,13 +505,6 @@
       '';
       options.desc = "Find files (alias for <leader>ff)";
     }
-    {
-      key = "<leader>g";
-      action.__raw = ''
-        function() Snacks.picker.grep() end
-      '';
-      options.desc = "Live grep (alias for <leader>fg)";
-    }
 
     # Snacks picker
     {
@@ -544,6 +554,13 @@
       '';
       options.desc = "Resume last search";
     }
+    {
+      key = "<leader>fs";
+      action.__raw = ''
+        function() Snacks.picker.lsp_symbols() end
+      '';
+      options.desc = "Find LSP symbols";
+    }
 
     # Vimux
     {
@@ -571,17 +588,48 @@
       options.desc = "Jump to beginning of context";
     }
 
-    # gitlinker
+    # gitportal
+    {
+      key = "<leader>g";
+      action = "";
+      options.desc = "+git";
+    }
+    {
+      key = "<leader>gg";
+      action.__raw = ''
+        function() Snacks.picker.grep() end
+      '';
+      options.desc = "Live grep (escape hatch)";
+    }
     {
       key = "<leader>gy";
-      action = "<cmd>lua require('gitlinker').get_buf_range_url('n')<CR>";
+      action.__raw = ''
+        function() require("gitportal").copy_link_to_clipboard() end
+      '';
       options.desc = "Copy git link to clipboard";
     }
     {
       key = "<leader>gy";
       mode = "v";
-      action = "<cmd>lua require('gitlinker').get_buf_range_url('v')<CR>";
+      action.__raw = ''
+        function() require("gitportal").copy_link_to_clipboard() end
+      '';
       options.desc = "Copy git link for selection";
+    }
+    {
+      key = "<leader>go";
+      action.__raw = ''
+        function() require("gitportal").open_file_in_browser() end
+      '';
+      options.desc = "Open git link in browser";
+    }
+    {
+      key = "<leader>go";
+      mode = "v";
+      action.__raw = ''
+        function() require("gitportal").open_file_in_browser() end
+      '';
+      options.desc = "Open git link for selection in browser";
     }
 
     # conform-nvim
