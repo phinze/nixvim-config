@@ -374,6 +374,7 @@
     };
   };
   plugins.rainbow-delimiters.enable = true;
+  plugins.render-markdown.enable = true;
   plugins.snacks = {
     enable = true;
     settings.picker.enable = true;
