@@ -498,13 +498,29 @@
       options.desc = "Toggle aerial symbols outline";
     }
 
-    # Old telescope keybindings (still work)
+    # LazyVim-style quick access
+    {
+      key = "<leader><space>";
+      action.__raw = ''
+        function() Snacks.picker.files() end
+      '';
+      options.desc = "Find files";
+    }
+    {
+      key = "<leader>/";
+      action.__raw = ''
+        function() Snacks.picker.grep() end
+      '';
+      options.desc = "Grep";
+    }
+
+    # Backup keybindings
     {
       key = "<leader>o";
       action.__raw = ''
         function() Snacks.picker.files() end
       '';
-      options.desc = "Find files (alias for <leader>ff)";
+      options.desc = "Find files (alias)";
     }
 
     # Snacks picker
