@@ -32,6 +32,11 @@
     # automatically read files when changed outside of neovim
     # useful when Claude Code modifies files in a separate tmux pane
     autoread = true;
+
+    # always write by truncating the original file rather than the
+    # rename-then-write-new strategy; prevents tmp files from briefly
+    # appearing on disk and confusing file watchers (e.g. Astro's glob-loader)
+    backupcopy = "yes";
   };
 
   clipboard = {
