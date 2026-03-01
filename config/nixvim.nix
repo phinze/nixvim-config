@@ -26,6 +26,9 @@
     # begin scrolling before cursor hits the very bottom of the buffer
     scrolloff = 5;
 
+    # single-line mouse wheel steps for smoother scrolling (default ver:3)
+    mousescroll = "ver:1,hor:1";
+
     # reduce time before hover diagnostics appear
     updatetime = 300;
 
