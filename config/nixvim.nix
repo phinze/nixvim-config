@@ -510,9 +510,9 @@
     {
       key = "<leader><space>";
       action.__raw = ''
-        function() Snacks.picker.files() end
+        function() Snacks.picker.files({ hidden = true, ignored = true }) end
       '';
-      options.desc = "Find files";
+      options.desc = "Find all files (including gitignored)";
     }
     {
       key = "<leader>/";
