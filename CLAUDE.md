@@ -20,6 +20,17 @@ When modifying the configuration:
 2. Run `nix flake check .` to validate changes
 3. Test with `nix run .`
 
+## Deploying
+
+This config is consumed as a flake input by `../nix-config`. To roll out changes:
+
+```bash
+cd ../nix-config
+./scripts/update-flake-input -y nixvim-config   # update flake input + commit
+nh os switch .                                   # apply on NixOS
+nh darwin switch .                               # apply on macOS
+```
+
 ## Architecture
 
 ### File Structure
