@@ -2,7 +2,8 @@
   lib,
   pkgs,
   ...
-}: {
+}:
+{
   # Space as leader
   globals.mapleader = " ";
 
@@ -52,10 +53,10 @@
   plugins.cmp = {
     enable = true;
     settings.sources = [
-      {name = "copilot";}
-      {name = "nvim_lsp";}
-      {name = "path";}
-      {name = "buffer";}
+      { name = "copilot"; }
+      { name = "nvim_lsp"; }
+      { name = "path"; }
+      { name = "buffer"; }
     ];
     settings.mapping = {
       __raw = ''
@@ -81,8 +82,13 @@
 
     settings = {
       formatters_by_ft = {
-        "_" = ["trim_whitespace"];
-        go = ["goimports" "golines" "gofmt" "gofumpt"];
+        "_" = [ "trim_whitespace" ];
+        go = [
+          "goimports"
+          "golines"
+          "gofmt"
+          "gofumpt"
+        ];
         javascript = {
           __unkeyed-1 = "prettierd";
           __unkeyed-2 = "prettier";
@@ -103,13 +109,20 @@
           __unkeyed-2 = "prettier";
           stop_after_first = true;
         };
-        json = ["jq"];
-        lua = ["stylua"];
-        nix = ["nixfmt"];
-        python = ["isort" "black"];
-        rust = ["rustfmt"];
-        sh = ["shellcheck" "shellharden" "shfmt"];
-        terraform = ["terraform_fmt"];
+        json = [ "jq" ];
+        lua = [ "stylua" ];
+        nix = [ "nixfmt" ];
+        python = [
+          "isort"
+          "black"
+        ];
+        rust = [ "rustfmt" ];
+        sh = [
+          "shellcheck"
+          "shellharden"
+          "shfmt"
+        ];
+        terraform = [ "terraform_fmt" ];
       };
       formatters = {
         nixfmt = {
@@ -354,6 +367,9 @@
         };
       };
     };
+  };
+  plugins.diffview = {
+    enable = true;
   };
   plugins.neogit = {
     enable = true;
@@ -657,6 +673,18 @@
       options.desc = "Open git link for selection in browser";
     }
 
+    # diffview
+    {
+      key = "<leader>gd";
+      action = "<cmd>DiffviewOpen<CR>";
+      options.desc = "Open diffview (unstaged changes)";
+    }
+    {
+      key = "<leader>gD";
+      action = "<cmd>DiffviewClose<CR>";
+      options.desc = "Close diffview";
+    }
+
     # conform-nvim
     {
       key = "<leader>F";
@@ -763,7 +791,7 @@
 
   autoCmd = [
     {
-      event = ["BufReadPost"];
+      event = [ "BufReadPost" ];
       pattern = "quickfix";
       command = "nnoremap <buffer> <CR> <CR>";
     }
@@ -772,7 +800,12 @@
     # This is useful when Claude Code modifies files in a separate tmux pane
     # NOTE: For tmux users, add `set -g focus-events on` to ~/.tmux.conf
     {
-      event = ["FocusGained" "BufEnter" "CursorHold" "CursorHoldI"];
+      event = [
+        "FocusGained"
+        "BufEnter"
+        "CursorHold"
+        "CursorHoldI"
+      ];
       pattern = "*";
       callback.__raw = ''
         function()
@@ -786,7 +819,7 @@
 
     # Show a warning when a file is reloaded
     {
-      event = ["FileChangedShellPost"];
+      event = [ "FileChangedShellPost" ];
       pattern = "*";
       callback.__raw = ''
         function()
