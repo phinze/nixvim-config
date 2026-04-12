@@ -615,6 +615,15 @@
       options.desc = "Rerun last command in Vimux";
     }
 
+    # Quickfix fuzzy picker
+    {
+      key = "<leader>q";
+      action.__raw = ''
+        function() Snacks.picker.qflist() end
+      '';
+      options.desc = "Fuzzy pick quickfix list";
+    }
+
     # Oil
     {
       key = "-";
