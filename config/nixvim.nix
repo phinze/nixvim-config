@@ -693,6 +693,11 @@
       action = "<cmd>DiffviewClose<CR>";
       options.desc = "Close diffview";
     }
+    {
+      key = "<leader>gc";
+      action = "<cmd>ClaudeChanges<CR>";
+      options.desc = "Changed files/hunks to quickfix";
+    }
 
     # conform-nvim
     {
