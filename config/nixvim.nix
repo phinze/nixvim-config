@@ -696,7 +696,12 @@
     {
       key = "<leader>gc";
       action = "<cmd>ClaudeChanges<CR>";
-      options.desc = "Changed files/hunks to quickfix";
+      options.desc = "Changed hunks to quickfix (vs index)";
+    }
+    {
+      key = "<leader>gC";
+      action = "<cmd>ClaudeChanges origin/main<CR>";
+      options.desc = "Changed hunks to quickfix (vs origin/main)";
     }
 
     # conform-nvim
