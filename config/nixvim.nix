@@ -473,6 +473,13 @@
   extraConfigLua = ''
     require("guess-indent").setup({})
 
+    -- Treat .mdx files as markdown for syntax highlighting
+    vim.filetype.add({
+      extension = {
+        mdx = "markdown",
+      },
+    })
+
     -- Configure diagnostics
     vim.diagnostic.config({
       virtual_text = true,
