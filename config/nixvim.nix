@@ -402,6 +402,7 @@
   plugins.snacks = {
     enable = true;
     settings.picker.enable = true;
+    settings.image.enabled = true;
   };
   plugins.treesitter = {
     enable = true;
@@ -462,6 +463,8 @@
 
   extraPackages = with pkgs; [
     tmux
+    imagemagick
+    ghostscript
   ];
 
   extraPlugins = [
