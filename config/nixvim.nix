@@ -402,7 +402,21 @@
   plugins.snacks = {
     enable = true;
     settings.picker.enable = true;
-    settings.image.enabled = true;
+    settings.image = {
+      enabled = true;
+      # Snacks only scales images down to fit, never up. Bump density so
+      # PDFs render large enough to overflow the pane and get scaled to fit.
+      convert.magick.pdf = [
+        "-density"
+        384
+        "{src}[{page}]"
+        "-background"
+        "white"
+        "-alpha"
+        "remove"
+        "-trim"
+      ];
+    };
   };
   plugins.treesitter = {
     enable = true;
