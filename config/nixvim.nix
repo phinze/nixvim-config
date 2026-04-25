@@ -404,25 +404,23 @@
     settings.picker.enable = true;
     settings.image = {
       enabled = true;
-      # Snacks only scales images down to fit, never up. Bump density so
-      # PDFs render large enough to overflow the pane and get scaled to fit.
-      # Re-enable alpha after the white flatten so the post-trim border is
-      # transparent, giving the page some breathing room against the editor bg.
+      # Render PDFs at 2x retina-ish density and add a solid-color margin
+      # matching the Catppuccin Mocha editor bg. Border is solid because
+      # ImageMagick produces a grayscale-no-alpha PNG from this PDF, so a
+      # transparent border falls through to white.
       convert.magick.pdf = [
         "-density"
-        768
+        384
         "{src}[{page}]"
         "-background"
         "white"
         "-alpha"
         "remove"
         "-trim"
-        "-alpha"
-        "set"
         "-bordercolor"
-        "none"
+        "#1E1E2E"
         "-border"
-        "80x80"
+        "200x200"
       ];
     };
   };
@@ -497,6 +495,21 @@
 
   extraConfigLua = ''
     require("guess-indent").setup({})
+
+    -- snacks.image.util.fit converts PDF pixel dims into a "logical" size by
+    -- dividing by the rendered DPI and multiplying by 96. The result is small
+    -- enough to skip the scale-down branch, leaving PDFs rendered at a fixed
+    -- tiny size regardless of pane size. Strip opts.info so fit always uses
+    -- raw pixel dimensions and overflows the pane → scales to fit.
+    do
+      local util = require("snacks.image.util")
+      local orig_fit = util.fit
+      function util.fit(file, cells, opts)
+        opts = vim.deepcopy(opts or {})
+        opts.info = nil
+        return orig_fit(file, cells, opts)
+      end
+    end
 
     -- Treat .mdx files as markdown for syntax highlighting
     vim.filetype.add({
