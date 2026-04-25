@@ -404,10 +404,10 @@
     settings.picker.enable = true;
     settings.image = {
       enabled = true;
-      # Render PDFs at 2x retina-ish density and add a solid-color margin
-      # matching the Catppuccin Mocha editor bg. Border is solid because
-      # ImageMagick produces a grayscale-no-alpha PNG from this PDF, so a
-      # transparent border falls through to white.
+      # Render PDFs at 2x retina-ish density. Skip -trim so the typeset
+      # page margins are preserved as natural page padding, then add a
+      # solid-color border in the editor bg for breathing room around
+      # the page itself.
       convert.magick.pdf = [
         "-density"
         384
@@ -416,7 +416,6 @@
         "white"
         "-alpha"
         "remove"
-        "-trim"
         "-bordercolor"
         "#1E1E2E"
         "-border"
