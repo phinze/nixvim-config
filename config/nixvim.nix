@@ -490,6 +490,7 @@
     pkgs.vimPlugins.vimux
     pkgs.vimPlugins.guess-indent-nvim
     pkgs.vimPlugins.vim-test
+    pkgs.vimPlugins.no-neck-pain-nvim
   ];
 
   extraConfigLua = ''
@@ -541,6 +542,25 @@
         vim.opt_local.linebreak = true
         vim.opt_local.breakindent = true
         vim.opt_local.showbreak = "↪ "
+      end,
+    })
+
+    -- Center prose buffers in a fixed-width column on wide displays.
+    require("no-neck-pain").setup({
+      width = 100,
+      autocmds = {
+        enableOnVimEnter = false,
+        enableOnTabEnter = false,
+      },
+    })
+
+    vim.api.nvim_create_autocmd("FileType", {
+      pattern = { "typst", "markdown" },
+      callback = function()
+        local nnp = require("no-neck-pain")
+        if not (nnp.state and nnp.state.enabled) then
+          vim.cmd("NoNeckPain")
+        end
       end,
     })
 
