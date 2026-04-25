@@ -532,6 +532,18 @@
       },
     })
 
+    -- Prose-friendly soft-wrap for typst (and markdown). Word-boundary wrap
+    -- with continuation indent makes semantic hard-wrapped paragraphs read
+    -- like flowing prose instead of getting truncated mid-word.
+    vim.api.nvim_create_autocmd("FileType", {
+      pattern = { "typst", "markdown" },
+      callback = function()
+        vim.opt_local.linebreak = true
+        vim.opt_local.breakindent = true
+        vim.opt_local.showbreak = "↪ "
+      end,
+    })
+
     -- Configure diagnostics
     vim.diagnostic.config({
       virtual_text = true,
