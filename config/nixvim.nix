@@ -510,6 +510,21 @@
       end
     end
 
+    -- snacks caches converted PDFs by sha256(src + page) with no mtime check,
+    -- so a recompiled PDF reuses the stale PNG. Wipe matching cache entries
+    -- when the file changes on disk, before the reload triggers re-render.
+    vim.api.nvim_create_autocmd("FileChangedShell", {
+      pattern = "*.pdf",
+      callback = function()
+        local cache_dir = vim.fn.stdpath("cache") .. "/snacks/image"
+        local src = vim.fn.expand("<afile>:p")
+        local base = vim.fn.fnamemodify(src, ":t:r"):gsub("[^%w%.]+", "-")
+        for _, file in ipairs(vim.fn.glob(cache_dir .. "/*-" .. base .. ".*", false, true)) do
+          vim.fn.delete(file)
+        end
+      end,
+    })
+
     -- Treat .mdx files as markdown for syntax highlighting
     vim.filetype.add({
       extension = {
