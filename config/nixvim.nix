@@ -406,15 +406,23 @@
       enabled = true;
       # Snacks only scales images down to fit, never up. Bump density so
       # PDFs render large enough to overflow the pane and get scaled to fit.
+      # Re-enable alpha after the white flatten so the post-trim border is
+      # transparent, giving the page some breathing room against the editor bg.
       convert.magick.pdf = [
         "-density"
-        384
+        768
         "{src}[{page}]"
         "-background"
         "white"
         "-alpha"
         "remove"
         "-trim"
+        "-alpha"
+        "set"
+        "-bordercolor"
+        "none"
+        "-border"
+        "80x80"
       ];
     };
   };
