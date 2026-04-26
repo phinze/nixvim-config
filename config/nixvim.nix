@@ -543,6 +543,10 @@
         vim.opt_local.breakindent = true
         vim.opt_local.showbreak = "↪ "
 
+        -- Pin the signcolumn so render-markdown's heading signs popping
+        -- in/out between insert and normal mode doesn't reflow text.
+        vim.opt_local.signcolumn = "yes"
+
         -- Move by visual lines through soft wraps; counted jumps (5j) still
         -- move by real lines so relativenumber targeting keeps working.
         local opts = { buffer = true, expr = true, silent = true }
