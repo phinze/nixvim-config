@@ -542,6 +542,12 @@
         vim.opt_local.linebreak = true
         vim.opt_local.breakindent = true
         vim.opt_local.showbreak = "↪ "
+
+        -- Move by visual lines through soft wraps; counted jumps (5j) still
+        -- move by real lines so relativenumber targeting keeps working.
+        local opts = { buffer = true, expr = true, silent = true }
+        vim.keymap.set({ "n", "x" }, "j", "v:count == 0 ? 'gj' : 'j'", opts)
+        vim.keymap.set({ "n", "x" }, "k", "v:count == 0 ? 'gk' : 'k'", opts)
       end,
     })
 
