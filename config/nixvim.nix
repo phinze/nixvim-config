@@ -490,7 +490,7 @@
     pkgs.vimPlugins.vimux
     pkgs.vimPlugins.guess-indent-nvim
     pkgs.vimPlugins.vim-test
-    pkgs.vimPlugins.no-neck-pain-nvim
+    pkgs.vimPlugins.true-zen-nvim
   ];
 
   extraConfigLua = ''
@@ -557,22 +557,38 @@
       end,
     })
 
-    -- Center prose buffers in a fixed-width column on wide displays.
-    require("no-neck-pain").setup({
-      width = 100,
-      autocmds = {
-        enableOnVimEnter = false,
-        enableOnTabEnter = false,
+    -- Center prose buffers via true-zen's Ataraxis mode. Designed as a
+    -- persistent layout (unlike zen-mode, which is a temporary overlay
+    -- that closes on focus loss).
+    require("true-zen").setup({
+      modes = {
+        ataraxis = {
+          minimum_writing_area = {
+            width = 100,
+          },
+          quit_untoggles = true,
+        },
+        minimalist = {
+          options = {
+            -- Keep signcolumn pinned so render-markdown heading signs
+            -- don't reflow text on insert↔normal transitions.
+            signcolumn = "yes",
+            number = false,
+            relativenumber = false,
+          },
+        },
       },
     })
 
     vim.api.nvim_create_autocmd("FileType", {
       pattern = { "typst", "markdown" },
-      callback = function()
-        local nnp = require("no-neck-pain")
-        if not (nnp.state and nnp.state.enabled) then
-          vim.cmd("NoNeckPain")
-        end
+      callback = function(args)
+        if vim.b[args.buf].zen_opened then return end
+        vim.b[args.buf].zen_opened = true
+        -- Defer so the buffer is fully loaded before Ataraxis claims focus.
+        vim.schedule(function()
+          vim.cmd("TZAtaraxis")
+        end)
       end,
     })
 
@@ -608,6 +624,70 @@
         vim.diagnostic.open_float(nil, opts)
       end,
     })
+
+    -- recto agent-link bridge. recto launches this neovim with `--listen` and,
+    -- when a companion session runs `recto focus <file>:<lines>`, drives the
+    -- editor here via `--remote-expr "v:lua.RectoFocus(...)"`. We jump the
+    -- cursor to the span and paint the range with a sticky extmark highlight,
+    -- mirroring recto's own focus highlight so the agent can point your eyes at
+    -- exactly the lines it's talking about. recto falls back to a plain
+    -- edit+center if these helpers aren't loaded, so this is purely the nice path.
+    do
+      local ns = vim.api.nvim_create_namespace("recto_focus")
+
+      local function clear_all()
+        for _, b in ipairs(vim.api.nvim_list_bufs()) do
+          if vim.api.nvim_buf_is_loaded(b) then
+            vim.api.nvim_buf_clear_namespace(b, ns, 0, -1)
+          end
+        end
+      end
+
+      -- Highlight group for the focused span; links to Visual by default so it
+      -- tracks the colorscheme, but a theme can define RectoFocus to override.
+      vim.api.nvim_set_hl(0, "RectoFocus", { link = "Visual", default = true })
+
+      _G.RectoFocus = function(path, start_line, end_line)
+        -- Don't reload the current buffer (would clobber unsaved edits); only
+        -- :edit when we're actually switching files.
+        local target = vim.fn.fnamemodify(path, ":p")
+        local current = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(0), ":p")
+        if target ~= current then
+          vim.cmd("edit " .. vim.fn.fnameescape(path))
+        end
+
+        clear_all()
+
+        -- No line range (vim.NIL over the wire) means whole-file focus: we've
+        -- opened the file, nothing to highlight.
+        if start_line == nil or start_line == vim.NIL then
+          return ""
+        end
+        if end_line == nil or end_line == vim.NIL then
+          end_line = start_line
+        end
+
+        local last = vim.api.nvim_buf_line_count(0)
+        start_line = math.max(1, math.min(start_line, last))
+        end_line = math.max(start_line, math.min(end_line, last))
+
+        vim.api.nvim_win_set_cursor(0, { start_line, 0 })
+        vim.cmd("normal! zz")
+
+        for l = start_line, end_line do
+          vim.api.nvim_buf_set_extmark(0, ns, l - 1, 0, {
+            line_hl_group = "RectoFocus",
+            hl_eol = true,
+          })
+        end
+        return ""
+      end
+
+      _G.RectoClear = function()
+        clear_all()
+        return ""
+      end
+    end
   '';
 
   extraConfigVim = ''
