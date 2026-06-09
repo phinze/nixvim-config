@@ -399,6 +399,25 @@
   };
   plugins.rainbow-delimiters.enable = true;
   plugins.render-markdown.enable = true;
+  # On-demand distraction-free prose, toggled with <leader>z. Floats the
+  # current buffer at a fixed reading width with a dimmed backdrop. Unlike
+  # true-zen/NoNeckPain it doesn't create real side split windows, so there
+  # are no empty panes to accidentally navigate into.
+  plugins.zen-mode = {
+    enable = true;
+    settings = {
+      window = {
+        width = 100;
+        options = {
+          # Pin signcolumn so render-markdown heading signs don't reflow
+          # text on insert↔normal transitions; drop line numbers for focus.
+          signcolumn = "yes";
+          number = false;
+          relativenumber = false;
+        };
+      };
+    };
+  };
   plugins.snacks = {
     enable = true;
     settings.picker.enable = true;
@@ -490,7 +509,6 @@
     pkgs.vimPlugins.vimux
     pkgs.vimPlugins.guess-indent-nvim
     pkgs.vimPlugins.vim-test
-    pkgs.vimPlugins.true-zen-nvim
   ];
 
   extraConfigLua = ''
@@ -557,40 +575,11 @@
       end,
     })
 
-    -- Center prose buffers via true-zen's Ataraxis mode. Designed as a
-    -- persistent layout (unlike zen-mode, which is a temporary overlay
-    -- that closes on focus loss).
-    require("true-zen").setup({
-      modes = {
-        ataraxis = {
-          minimum_writing_area = {
-            width = 100,
-          },
-          quit_untoggles = true,
-        },
-        minimalist = {
-          options = {
-            -- Keep signcolumn pinned so render-markdown heading signs
-            -- don't reflow text on insert↔normal transitions.
-            signcolumn = "yes",
-            number = false,
-            relativenumber = false,
-          },
-        },
-      },
-    })
-
-    vim.api.nvim_create_autocmd("FileType", {
-      pattern = { "typst", "markdown" },
-      callback = function(args)
-        if vim.b[args.buf].zen_opened then return end
-        vim.b[args.buf].zen_opened = true
-        -- Defer so the buffer is fully loaded before Ataraxis claims focus.
-        vim.schedule(function()
-          vim.cmd("TZAtaraxis")
-        end)
-      end,
-    })
+    -- Centered, distraction-free prose is on-demand via zen-mode (<leader>z),
+    -- not auto-forced on every markdown/typst buffer. zen-mode floats the
+    -- buffer with a dimmed backdrop instead of inserting real empty split
+    -- windows, so there are no focusable "noop" panes to navigate around.
+    -- See plugins.zen-mode below for the config.
 
     -- Configure diagnostics
     vim.diagnostic.config({
@@ -703,6 +692,13 @@
       key = "<leader>a";
       action = "<cmd>AerialToggle<CR>";
       options.desc = "Toggle aerial symbols outline";
+    }
+
+    # Distraction-free / centered prose
+    {
+      key = "<leader>z";
+      action = "<cmd>ZenMode<CR>";
+      options.desc = "Toggle Zen mode";
     }
 
     # LazyVim-style quick access
