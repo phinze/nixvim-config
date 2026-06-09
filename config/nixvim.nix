@@ -398,7 +398,7 @@
     };
   };
   plugins.rainbow-delimiters.enable = true;
-  plugins.render-markdown.enable = true;
+  plugins.markview.enable = true;
   # On-demand distraction-free prose, toggled with <leader>z. Floats the
   # current buffer at a fixed reading width with a dimmed backdrop. Unlike
   # true-zen/NoNeckPain it doesn't create real side split windows, so there
@@ -409,7 +409,7 @@
       window = {
         width = 100;
         options = {
-          # Pin signcolumn so render-markdown heading signs don't reflow
+          # Pin signcolumn so markdown rendering signs don't reflow
           # text on insert↔normal transitions; drop line numbers for focus.
           signcolumn = "yes";
           number = false;
@@ -561,7 +561,7 @@
         vim.opt_local.breakindent = true
         vim.opt_local.showbreak = "↪ "
 
-        -- Pin the signcolumn so render-markdown's heading signs popping
+        -- Pin the signcolumn so markdown rendering signs popping
         -- in/out between insert and normal mode doesn't reflow text.
         vim.opt_local.signcolumn = "yes"
 
