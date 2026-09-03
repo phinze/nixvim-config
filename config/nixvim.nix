@@ -398,7 +398,14 @@
     };
   };
   plugins.rainbow-delimiters.enable = true;
-  plugins.markview.enable = true;
+  plugins.markview = {
+    enable = true;
+    # Markview's custom list wrapping inserts virtual indentation at raw-text
+    # wrap boundaries. Concealed link destinations make those boundaries
+    # diverge from the rendered text and can strand punctuation far to the
+    # right. Let Neovim's native list-aware breakindent handle it instead.
+    settings.markdown.list_items.wrap = false;
+  };
   # On-demand distraction-free prose, toggled with <leader>z. Floats the
   # current buffer at a fixed reading width with a dimmed backdrop. Unlike
   # true-zen/NoNeckPain it doesn't create real side split windows, so there
@@ -675,6 +682,7 @@
       callback = function()
         vim.opt_local.linebreak = true
         vim.opt_local.breakindent = true
+        vim.opt_local.breakindentopt = "list:-1"
         vim.opt_local.showbreak = "↪ "
 
         -- Pin the signcolumn so markdown rendering signs popping
