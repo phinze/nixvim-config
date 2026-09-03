@@ -529,20 +529,136 @@
       end
     end
 
-    -- snacks caches converted PDFs by sha256(src + page) with no mtime check,
-    -- so a recompiled PDF reuses the stale PNG. Wipe matching cache entries
-    -- when the file changes on disk, before the reload triggers re-render.
-    vim.api.nvim_create_autocmd("FileChangedShell", {
-      pattern = "*.pdf",
-      callback = function()
-        local cache_dir = vim.fn.stdpath("cache") .. "/snacks/image"
-        local src = vim.fn.expand("<afile>:p")
-        local base = vim.fn.fnamemodify(src, ":t:r"):gsub("[^%w%.]+", "-")
-        for _, file in ipairs(vim.fn.glob(cache_dir .. "/*-" .. base .. ".*", false, true)) do
-          vim.fn.delete(file)
+    -- Snacks keys converted images by src + page, without considering the
+    -- source mtime. It also keeps decoded images in memory, so reloading a
+    -- Markdown buffer still reuses an old SVG or PDF. Track the local files
+    -- behind placements and rebuild their images when they change on disk.
+    do
+      local uv = vim.uv or vim.loop
+      local convert = require("snacks.image.convert")
+      local image = require("snacks.image.image")
+      local placement = require("snacks.image.placement")
+      local cache_dir = Snacks.image.config.cache
+      local tracked = {}
+
+      local function source(src)
+        local file, page = convert.get_page(src)
+        if convert.is_uri(file) then
+          return
         end
-      end,
-    })
+        return convert.norm(file), page
+      end
+
+      local function stamp(stat)
+        return stat
+          and table.concat({ stat.mtime.sec, stat.mtime.nsec, stat.size }, ":")
+          or nil
+      end
+
+      local function newer(a, b)
+        return a.mtime.sec > b.mtime.sec
+          or (a.mtime.sec == b.mtime.sec and a.mtime.nsec > b.mtime.nsec)
+      end
+
+      local function prefix(file, page)
+        local base = vim.fn.fnamemodify(file, ":t:r"):gsub("[^%w%.]+", "-")
+        return vim.fn.sha256(file .. page):sub(1, 8) .. "-" .. base
+      end
+
+      local function invalidate(file, page)
+        local pattern = cache_dir .. "/" .. prefix(file, page) .. ".*"
+        for _, cached in ipairs(vim.fn.glob(pattern, false, true)) do
+          vim.fn.delete(cached)
+        end
+      end
+
+      -- Avoid a stale cache hit the first time an image is opened in this
+      -- Neovim process. This also covers image buffers outside documents.
+      local image_new = image.new
+      function image.new(src)
+        local file, page = source(src)
+        local source_stat = file and uv.fs_stat(file) or nil
+        if source_stat then
+          local pattern = cache_dir .. "/" .. prefix(file, page) .. ".*"
+          for _, cached in ipairs(vim.fn.glob(pattern, false, true)) do
+            local cached_stat = uv.fs_stat(cached)
+            if cached_stat and newer(source_stat, cached_stat) then
+              invalidate(file, page)
+              image.clear()
+              break
+            end
+          end
+        end
+        return image_new(src)
+      end
+
+      local placement_new = placement.new
+      function placement.new(buf, src, opts)
+        local ret = placement_new(buf, src, opts)
+        local file = source(src)
+        if file then
+          tracked[file] = tracked[file] or {
+            stamp = stamp(uv.fs_stat(file)),
+            placements = setmetatable({}, { __mode = "k" }),
+          }
+          tracked[file].placements[ret] = true
+        end
+        return ret
+      end
+
+      local function refresh(file, entry, current_stamp)
+        local placements = {}
+        for p in pairs(entry.placements) do
+          if not p.closed and vim.api.nvim_buf_is_valid(p.buf) then
+            table.insert(placements, p)
+            local _, page = source(p.img.src)
+            invalidate(file, page)
+            if p.img._convert and not p.img._convert:done() then
+              p.img._convert:abort()
+            end
+          end
+        end
+
+        entry.stamp = current_stamp
+        if #placements == 0 then
+          return
+        end
+
+        image.clear()
+        for _, p in ipairs(placements) do
+          local src = p.img.src
+          p.img:del(p.id)
+          p.img = image.new(src)
+          p.img:place(p)
+          p._state = nil
+          if p.img:ready() then
+            local current = p
+            vim.schedule(function()
+              current:update()
+            end)
+          end
+        end
+      end
+
+      local function refresh_changed_images()
+        for file, entry in pairs(tracked) do
+          local current_stamp = stamp(uv.fs_stat(file))
+          if current_stamp and current_stamp ~= entry.stamp then
+            refresh(file, entry, current_stamp)
+          end
+        end
+      end
+
+      vim.api.nvim_create_autocmd({
+        "FocusGained",
+        "BufEnter",
+        "CursorHold",
+        "CursorHoldI",
+      }, {
+        group = vim.api.nvim_create_augroup("snacks.image.refresh", { clear = true }),
+        callback = refresh_changed_images,
+      })
+    end
 
     -- Treat .mdx files as markdown for syntax highlighting
     vim.filetype.add({
