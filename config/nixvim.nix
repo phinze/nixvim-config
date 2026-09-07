@@ -50,6 +50,25 @@
   };
 
   colorschemes.catppuccin.enable = true;
+
+  plugins.better-escape = {
+    enable = true;
+    settings = {
+      timeout = 200;
+      default_mappings = false;
+      mappings = {
+        i = {
+          j = {
+            k = "<Esc>";
+          };
+          k = {
+            j = "<Esc>";
+          };
+        };
+      };
+    };
+  };
+
   plugins.cmp = {
     enable = true;
     settings.sources = [
