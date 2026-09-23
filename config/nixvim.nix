@@ -526,7 +526,6 @@
   plugins.which-key.enable = true;
 
   extraPackages = with pkgs; [
-    tmux
     imagemagick
     ghostscript
   ];
