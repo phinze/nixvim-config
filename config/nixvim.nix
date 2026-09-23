@@ -555,6 +555,15 @@
       end
     end
 
+    -- Rex supports kitty graphics placeholders like Ghostty, but snacks only
+    -- recognizes terminals it knows by name.
+    table.insert(Snacks.image.terminal.envs(), {
+      name = "rex",
+      terminal = "rex",
+      supported = true,
+      placeholders = true,
+    })
+
     -- Snacks keys converted images by src + page, without considering the
     -- source mtime. It also keeps decoded images in memory, so reloading a
     -- Markdown buffer still reuses an old SVG or PDF. Track the local files
