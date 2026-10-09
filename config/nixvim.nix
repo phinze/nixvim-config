@@ -563,6 +563,28 @@
       placeholders = true,
     })
 
+    -- tmux-navigator for rigs that live in Rex instead of tmux. Rex hands
+    -- ctrl+hjkl to nvim when nvim is in the foreground (see rex.nix in
+    -- nix-config), so nvim has to pass the key back at its edge splits, the
+    -- way the plugin calls tmux select-pane. The plugin's own mappings are
+    -- switched off here, before its plugin/ file loads after init.lua.
+    --
+    -- `rex do pane.focus.*` asks Rex.app itself to move, which is what moves
+    -- the focus on screen; `rex focus` would only move the server's.
+    if vim.env.REX_SESSION and not vim.env.TMUX then
+      vim.g.tmux_navigator_no_mappings = 1
+      local rex = vim.env.REX_BIN_DIR and (vim.env.REX_BIN_DIR .. "/rex") or "rex"
+      for key, dir in pairs({ h = "left", j = "down", k = "up", l = "right" }) do
+        vim.keymap.set("n", "<C-" .. key .. ">", function()
+          local win = vim.api.nvim_get_current_win()
+          vim.cmd.wincmd(key)
+          if vim.api.nvim_get_current_win() == win then
+            vim.system({ rex, "do", "pane.focus." .. dir })
+          end
+        end, { silent = true, desc = "Window " .. dir .. ", then Rex block" })
+      end
+    end
+
     -- Snacks keys converted images by src + page, without considering the
     -- source mtime. It also keeps decoded images in memory, so reloading a
     -- Markdown buffer still reuses an old SVG or PDF. Track the local files
