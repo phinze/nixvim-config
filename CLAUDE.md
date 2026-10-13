@@ -22,14 +22,10 @@ When modifying the configuration:
 
 ## Deploying
 
-This config is consumed as a flake input by `../nix-config`. To roll out changes:
-
-```bash
-cd ../nix-config
-./scripts/update-flake-input -y nixvim-config   # update flake input + commit
-nh os switch .                                   # apply on NixOS
-nh darwin switch .                               # apply on macOS
-```
+This config is consumed as a flake input by nix-config, and nix-config-sync on
+foxtrotbase bumps that input. To roll out a change, push to `main` and run
+`nix-config-sync kick`. Don't bump the input or switch by hand. The `nix-config`
+skill covers the details, including the Mac.
 
 ## Architecture
 
