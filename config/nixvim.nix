@@ -505,14 +505,27 @@
       end
     end
 
-    -- Rex supports kitty graphics placeholders like Ghostty, but snacks only
-    -- recognizes terminals it knows by name.
+    -- Rex can't draw kitty graphics unicode placeholders yet (the cells show
+    -- raw U+10EEEE), and its direct placements land in the window's corner.
+    -- Mark it unsupported so snacks doesn't fall back to the generic tmux/ssh
+    -- profile. Doc rendering doesn't consult that flag (it would open an
+    -- empty float on image lines), so skip attaching too. Flip to
+    -- supported + placeholders once Rex supports them.
     table.insert(Snacks.image.terminal.envs(), {
       name = "rex",
       terminal = "rex",
-      supported = true,
-      placeholders = true,
+      supported = false,
     })
+    do
+      local doc = require("snacks.image.doc")
+      local attach = doc.attach
+      function doc.attach(buf)
+        if Snacks.image.terminal.env().supported == false then
+          return
+        end
+        return attach(buf)
+      end
+    end
 
     -- tmux-navigator for rigs that live in Rex instead of tmux. Rex hands
     -- ctrl+hjkl to nvim when nvim is in the foreground (see rex.nix in
