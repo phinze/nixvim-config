@@ -424,6 +424,18 @@
     # diverge from the rendered text and can strand punctuation far to the
     # right. Let Neovim's native list-aware breakindent handle it instead.
     settings.markdown.list_items.wrap = false;
+    settings.markdown.block_quotes.wrap = false;
+    # add_padding swaps a list item's real indent for (level+1)*shift_width
+    # columns of virtual space, so breakindent (which only sees the raw
+    # text) hangs wrapped lines left of the rendered bullet text. Render
+    # bullets at their real column instead.
+    settings.markdown.list_items = {
+      marker_minus.add_padding = false;
+      marker_plus.add_padding = false;
+      marker_star.add_padding = false;
+      marker_dot.add_padding = false;
+      marker_parenthesis.add_padding = false;
+    };
   };
   # On-demand distraction-free prose, toggled with <leader>z. Floats the
   # current buffer at a fixed reading width with a dimmed backdrop. Unlike
@@ -723,16 +735,29 @@
       },
     })
 
-    -- Prose-friendly soft-wrap for typst (and markdown). Word-boundary wrap
-    -- with continuation indent makes semantic hard-wrapped paragraphs read
-    -- like flowing prose instead of getting truncated mid-word.
+    -- Prose-friendly soft-wrap for typst (and markdown). Paragraphs are one
+    -- long line each, so never hard-wrap while typing: textwidth=0 and no 't'
+    -- in formatoptions (markdown's ftplugin adds it back). gq still works.
+    --
+    -- Continuation lines hang under their text: list:-1 indents by the
+    -- 'formatlistpat' match, and shift:-2 pulls the 2-column showbreak glyph
+    -- back into that indent so wrapped text lines up exactly with the text
+    -- above it. The glyph lands under the bullet (or at column 0 for plain
+    -- paragraphs, where the negative shift clamps).
     vim.api.nvim_create_autocmd("FileType", {
       pattern = { "typst", "markdown" },
       callback = function()
+        vim.opt_local.textwidth = 0
+        vim.opt_local.formatoptions:remove({ "t", "c" })
         vim.opt_local.linebreak = true
         vim.opt_local.breakindent = true
-        vim.opt_local.breakindentopt = "list:-1"
+        vim.opt_local.breakindentopt = "list:-1,shift:-2"
         vim.opt_local.showbreak = "↪ "
+
+        -- Blockquotes hang under the quoted text too.
+        if vim.bo.filetype == "markdown" then
+          vim.opt_local.formatlistpat:append([[\|^\s*>\s*]])
+        end
 
         -- Pin the signcolumn so markdown rendering signs popping
         -- in/out between insert and normal mode doesn't reflow text.
