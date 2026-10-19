@@ -39,12 +39,11 @@ skill covers the details, including the Mac.
 - Keybindings follow a consistent pattern using `<leader>` (Space) as the prefix
 - LSP servers are configured in `plugins.lsp.servers`
 - Formatters are configured through `plugins.conform-nvim`
-- Test runners are configured in both `plugins.neotest` and `plugins.vim-test`
 
 ### Key Design Decisions
 - Leader key is Space
 - System clipboard integration is enabled by default
 - Format-on-save is enabled with language-specific formatters
-- Dual test runner setup: neotest (native) and vim-test (with vimux)
-- Git integration through gitsigns, gitlinker, and neogit
-- Copilot integration for AI-assisted coding
+- Git integration through gitsigns and gitportal
+- Kept deliberately small: Neovim is mostly for prose and light code reading
+  now, so prefer cutting a plugin over carrying one through an upgrade

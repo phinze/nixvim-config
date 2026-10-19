@@ -72,7 +72,6 @@
   plugins.cmp = {
     enable = true;
     settings.sources = [
-      { name = "copilot"; }
       { name = "nvim_lsp"; }
       { name = "path"; }
       { name = "buffer"; }
@@ -205,17 +204,6 @@
         end
       '';
     };
-  };
-  plugins.copilot-lua = {
-    enable = true;
-    settings = {
-      # Disable in favor of copilot-cmp
-      suggestion.enabled = false;
-      panel.enabled = false;
-    };
-  };
-  plugins.copilot-cmp = {
-    enable = true;
   };
   plugins.gitsigns = {
     enable = true;
@@ -387,12 +375,6 @@
       };
     };
   };
-  plugins.diffview = {
-    enable = true;
-  };
-  plugins.neogit = {
-    enable = true;
-  };
   plugins.neo-tree = {
     enable = true;
     settings = {
@@ -487,51 +469,6 @@
   plugins.treesitter-context = {
     enable = true;
   };
-  plugins.treesitter-textobjects = {
-    enable = true;
-    settings = {
-      select = {
-        enable = true;
-        lookahead = true;
-        keymaps = {
-          aa = "@parameter.outer";
-          ia = "@parameter.inner";
-          af = "@function.outer";
-          "if" = "@function.inner";
-          ac = "@class.outer";
-          ic = "@class.inner";
-          ii = "@conditional.inner";
-          ai = "@conditional.outer";
-          il = "@loop.inner";
-          al = "@loop.outer";
-          at = "@comment.outer";
-        };
-      };
-      move = {
-        enable = true;
-        goto_next_start = {
-          "]m" = "@function.outer";
-          "]]" = "@class.outer";
-        };
-        goto_next_end = {
-          "]M" = "@function.outer";
-          "][" = "@class.outer";
-        };
-        goto_previous_start = {
-          "[m" = "@function.outer";
-          "[[" = "@class.outer";
-        };
-        goto_previous_end = {
-          "[M" = "@function.outer";
-          "[]" = "@class.outer";
-        };
-      };
-    };
-  };
-  plugins.treesitter-refactor = {
-    enable = true;
-    settings.highlight_definitions.enable = true;
-  };
   plugins.trouble.enable = true;
   plugins.tmux-navigator.enable = true;
   plugins.web-devicons.enable = true;
@@ -543,9 +480,7 @@
   ];
 
   extraPlugins = [
-    pkgs.vimPlugins.vimux
     pkgs.vimPlugins.guess-indent-nvim
-    pkgs.vimPlugins.vim-test
   ];
 
   extraConfigLua = ''
@@ -877,13 +812,6 @@
     end
   '';
 
-  extraConfigVim = ''
-    " use vimux in vim-test
-    let test#strategy = "vimux"
-    let test#preserve_screen = 1
-    let test#go#gotest#options = '-v'
-  '';
-
   keymaps = [
     # Aerial
     {
@@ -980,18 +908,6 @@
       options.desc = "Find LSP symbols";
     }
 
-    # Vimux
-    {
-      key = "<leader>v";
-      action = "<cmd>VimuxPromptCommand<CR>";
-      options.desc = "Run command in Vimux";
-    }
-    {
-      key = "<CR>";
-      action = ":wa <CR> :VimuxRunLastCommand<CR>";
-      options.desc = "Rerun last command in Vimux";
-    }
-
     # Quickfix fuzzy picker
     {
       key = "<leader>q";
@@ -1059,17 +975,6 @@
       options.desc = "Open git link for selection in browser";
     }
 
-    # diffview
-    {
-      key = "<leader>gd";
-      action = "<cmd>DiffviewOpen<CR>";
-      options.desc = "Open diffview (unstaged changes)";
-    }
-    {
-      key = "<leader>gD";
-      action = "<cmd>DiffviewClose<CR>";
-      options.desc = "Close diffview";
-    }
     {
       key = "<leader>gc";
       action = "<cmd>ClaudeChanges<CR>";
@@ -1095,103 +1000,15 @@
       options.desc = "Peek precognition hints";
     }
 
-    # neotest
-    {
-      key = "<leader>t";
-      action = "";
-      options.desc = "+test";
-    }
-    {
-      key = "<leader>tt";
-      action.__raw = ''
-        function() require("neotest").run.run(vim.fn.expand("%")) end
-      '';
-      options.desc = "Run File";
-    }
-    {
-      key = "<leader>tT";
-      action.__raw = ''
-        function() require("neotest").run.run(vim.uv.cwd()) end
-      '';
-      options.desc = "Run All Test Files";
-    }
-    {
-      key = "<leader>tr";
-      action.__raw = ''
-        function() require("neotest").run.run() end
-      '';
-      options.desc = "Run Nearest";
-    }
-    {
-      key = "<leader>tl";
-      action.__raw = ''
-        function() require("neotest").run.run_last() end
-      '';
-      options.desc = "Run Last";
-    }
-    {
-      key = "<leader>ts";
-      action.__raw = ''
-        function() require("neotest").summary.toggle() end
-      '';
-      options.desc = "Toggle Summary";
-    }
-    {
-      key = "<leader>to";
-      action.__raw = ''
-        function() require("neotest").output.open({ enter = true; auto_close = true;}) end
-      '';
-      options.desc = "Show Output";
-    }
-    {
-      key = "<leader>tO";
-      action.__raw = ''
-        function() require("neotest").output_panel.toggle() end
-      '';
-      options.desc = "Toggle Output Panel";
-    }
-    {
-      key = "<leader>tS";
-      action.__raw = ''
-        function() require("neotest").run.stop() end
-      '';
-      options.desc = "Stop";
-    }
-    {
-      key = "<leader>tw";
-      action.__raw = ''
-        function() require("neotest").watch.toggle(vim.fn.expand("%")) end
-      '';
-      options.desc = "Toggle Watch";
-    }
-
     # neo-tree
     {
       key = "<leader>nt";
       action = "<cmd>Neotree toggle<CR>";
       options.desc = "Toggle neo-tree";
     }
-
-    # vim-test
-    {
-      key = "<leader>tn";
-      action = "<cmd>TestNearest<CR>";
-      options.desc = "Run nearest test in vim-test";
-    }
-    {
-      key = "<leader>tf";
-      action = "<cmd>TestFile<CR>";
-      options.desc = "Run file tests in vim-test";
-    }
   ];
 
   autoCmd = [
-    {
-      event = [ "BufReadPost" ];
-      pattern = "quickfix";
-      command = "nnoremap <buffer> <CR> <CR>";
-    }
-
     # Automatic file reloading when files change outside of neovim
     # This is useful when Claude Code modifies files in a separate tmux pane
     # NOTE: For tmux users, add `set -g focus-events on` to ~/.tmux.conf
