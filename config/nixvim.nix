@@ -144,7 +144,7 @@
       };
       formatters = {
         nixfmt = {
-          command = "${lib.getExe pkgs.nixfmt-rfc-style}";
+          command = "${lib.getExe pkgs.nixfmt}";
         };
         black = {
           command = "${lib.getExe pkgs.black}";
@@ -407,6 +407,9 @@
     # right. Let Neovim's native list-aware breakindent handle it instead.
     settings.markdown.list_items.wrap = false;
     settings.markdown.block_quotes.wrap = false;
+    # The comment parser reads RFD review notes like `<!-- SEED (Paul, Evan):`
+    # as TODO(user) tags and badges them. Leave comments as plain text.
+    settings.comment.enable = false;
     # add_padding swaps a list item's real indent for (level+1)*shift_width
     # columns of virtual space, so breakindent (which only sees the raw
     # text) hangs wrapped lines left of the rendered bullet text. Render
@@ -464,7 +467,8 @@
   };
   plugins.treesitter = {
     enable = true;
-    settings.indent.enable = true;
+    highlight.enable = true;
+    indent.enable = true;
   };
   plugins.treesitter-context = {
     enable = true;
