@@ -1059,5 +1059,47 @@
         end
       '';
     }
+
+    # Re-render markview after a reload from disk. Markview only redraws on
+    # TextChanged, which fires for the current buffer alone; its own
+    # FileChangedShellPost handler resets queries but doesn't render. So a
+    # Markdown buffer reloaded while visible in a non-current window (a split,
+    # or behind a picker float) keeps the old overlay on the new text:
+    # concealed heading markers eat the starts of words, icons land on the
+    # wrong lines. Scheduled so it runs after markview's handler restarts
+    # tree-sitter on the buffer.
+    {
+      event = [ "FileChangedShellPost" ];
+      pattern = "*";
+      callback.__raw = ''
+        function(args)
+          local buf = args.buf
+          -- Everything goes through pcall so a markview upgrade that moves
+          -- these internals degrades to a stale overlay, not an error on
+          -- every reload.
+          vim.schedule(function()
+            if not vim.api.nvim_buf_is_valid(buf) then
+              return
+            end
+            pcall(function()
+              local state = require("markview.state")
+              if not state.enabled() or not state.buf_attached(buf) then
+                return
+              end
+              local buf_state = state.get_buffer_state(buf, false)
+              if not buf_state or not buf_state.enable then
+                return
+              end
+              local markview = require("markview")
+              if require("markview.actions").in_preview_mode() then
+                markview.render(buf)
+              else
+                markview.clear(buf)
+              end
+            end)
+          end)
+        end
+      '';
+    }
   ];
 }
